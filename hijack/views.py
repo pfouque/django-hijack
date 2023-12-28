@@ -1,6 +1,6 @@
 from contextlib import contextmanager
 
-from django.contrib.auth import BACKEND_SESSION_KEY, get_user_model, load_backend, login
+from django.contrib.auth import get_user_model, login
 from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.db import transaction
 from django.http import HttpResponseBadRequest, HttpResponseRedirect
@@ -14,12 +14,6 @@ from django.views.generic.detail import SingleObjectMixin
 
 from hijack import signals
 from hijack.conf import settings
-
-
-def get_used_backend(request):
-    backend_str = request.session[BACKEND_SESSION_KEY]
-    backend = load_backend(backend_str)
-    return backend
 
 
 @contextmanager
@@ -94,11 +88,8 @@ class AcquireUserView(
         hijack_history = request.session.get("hijack_history", [])
         hijack_history.append(request.user._meta.pk.value_to_string(hijacker))
 
-        backend = get_used_backend(request)
-        backend = f"{backend.__module__}.{backend.__class__.__name__}"
-
         with signals.no_update_last_login(), keep_session_age(request.session):
-            login(request, hijacked, backend=backend)
+            login(request, hijacked)
 
         request.session["hijack_history"] = hijack_history
 
@@ -131,10 +122,9 @@ class ReleaseUserView(
         hijacked = request.user
         user_pk = hijack_history.pop()
         hijacker = get_object_or_404(get_user_model(), pk=user_pk)
-        backend = get_used_backend(request)
-        backend = f"{backend.__module__}.{backend.__class__.__name__}"
+
         with signals.no_update_last_login(), keep_session_age(request.session):
-            login(request, hijacker, backend=backend)
+            login(request, hijacker)
 
         request.session["hijack_history"] = hijack_history
 
