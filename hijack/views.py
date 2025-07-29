@@ -72,7 +72,7 @@ class AcquireUserView(
     View,
 ):
     model = get_user_model()
-    success_url = settings.LOGIN_REDIRECT_URL
+    success_url = settings.HIJACK_LOGIN_REDIRECT_URL
 
     def test_func(self):
         func = import_string(settings.HIJACK_PERMISSION_CHECK)
@@ -120,7 +120,7 @@ class ReleaseUserView(
 ):
     raise_exception = True
 
-    success_url = settings.LOGOUT_REDIRECT_URL
+    success_url = settings.HIJACK_LOGOUT_REDIRECT_URL
 
     def test_func(self):
         return bool(self.request.session.get("hijack_history", []))

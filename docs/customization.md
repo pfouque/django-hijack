@@ -156,6 +156,18 @@ The function must accept two keyword arguments `hijacker` and `hijacked`.
 
 Default: `'hijack.permissions.has_hijack_perm'`.
 
+### `HIJACK_LOGIN_REDIRECT_URL`
+
+
+Default: `'LOGIN_REDIRECT_URL'`.
+
+### `HIJACK_LOGOUT_REDIRECT_URL`
+
+
+Default: `'LOGOUT_REDIRECT_URL'`.
+
+
+
 ## Signals
 You can catch a signal when someone is hijacked or released. Here is an example:
 

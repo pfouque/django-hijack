@@ -28,7 +28,7 @@ class HijackUserAdminMixin:
 
     def get_hijack_success_url(self, request, obj):
         """Return URL to which one will be forwarded to after hijacking another user."""
-        success_url = settings.LOGIN_REDIRECT_URL
+        success_url = settings.HIJACK_LOGIN_REDIRECT_URL
         if self.hijack_success_url:
             success_url = self.hijack_success_url
         elif hasattr(obj, "get_absolute_url"):
